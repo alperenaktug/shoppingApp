@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const Joi = require("joi");
 
 app.use(express.json());
 
@@ -18,6 +19,25 @@ app.get("/api/products", (req, res) => {
 });
 
 app.post("/api/products", (req, res) => {
+  // Validations doğrulaması :
+  // if (!req.body.name || req.body.name.length < 4) {
+  //   res
+  //     .status(400)
+  //     .send("Ürün adı bilgisini en az 3 karakter olarak girmelisiniz!");
+  //   return;
+  // }
+
+  const schema = new Joi.object({
+    name: Joi.string().min(3).max(30).required(),
+    price: Joi.number().required(),
+  });
+  const result = schema.validate(req.body);
+
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+
   const product = {
     id: products.length + 1,
     name: req.body.name,
