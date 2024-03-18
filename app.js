@@ -27,13 +27,9 @@ app.post("/api/products", (req, res) => {
   //   return;
   // }
 
-  const schema = new Joi.object({
-    name: Joi.string().min(3).max(30).required(),
-    price: Joi.number().required(),
-  });
-  const result = schema.validate(req.body);
+  const { error } = validateProduct(req.body);
 
-  if (result.error) {
+  if (error) {
     res.status(400).send(result.error.details[0].message);
     return;
   }
@@ -47,6 +43,27 @@ app.post("/api/products", (req, res) => {
   res.send(product);
 });
 
+app.put("/api/products/:id", (req, res) => {
+  // id ye göre ürün alma
+  const product = products.find((p) => p.id == req.params.id);
+  if (!product) {
+    res.status(404).send("Aradığınız ürün bulunamadı.");
+  }
+
+  // validate
+  const { error } = validateProduct(req.body);
+
+  if (error) {
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+
+  product.name = req.body.name;
+  product.price = req.body.price;
+
+  res.send(product);
+});
+
 app.get("/api/products/:id", (req, res) => {
   console.log(req.params);
   console.log(req.query);
@@ -57,6 +74,14 @@ app.get("/api/products/:id", (req, res) => {
   }
   res.send(product);
 });
+
+function validateProduct(product) {
+  const schema = new Joi.object({
+    name: Joi.string().min(3).max(30).required(),
+    price: Joi.number().required(),
+  });
+  return schema.validate(product);
+}
 
 app.listen(3000, () => {
   console.log("listening on port 3000");
