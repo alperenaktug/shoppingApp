@@ -33,41 +33,6 @@ const database = "shopdb";
   }
 })();
 
-const productSchema = mongoose.Schema({
-  name: String,
-  price: Number,
-  description: String,
-  imageURL: String,
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-  isActive: Boolean,
-});
-// model oluşturma
-const Product = mongoose.model("Product", productSchema);
-
-//nesne oluşturma
-// kayıt ekleme
-const prd = new Product({
-  name: "iphone 14",
-  price: "30000",
-  description: "iyi telefon",
-  imageURL: "1.jpeg",
-  isActive: true,
-});
-
-async function saveProduct() {
-  try {
-    const result = await prd.save();
-    console.log(result);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-saveProduct();
-
 app.listen(3005, () => {
   console.log("listening on port 3000");
 });
