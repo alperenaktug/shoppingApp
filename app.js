@@ -30,8 +30,7 @@ app.post("/api/products", (req, res) => {
   const { error } = validateProduct(req.body);
 
   if (error) {
-    res.status(400).send(result.error.details[0].message);
-    return;
+    return res.status(400).send(result.error.details[0].message);
   }
 
   const product = {
@@ -47,7 +46,7 @@ app.put("/api/products/:id", (req, res) => {
   // id ye göre ürün alma
   const product = products.find((p) => p.id == req.params.id);
   if (!product) {
-    res.status(404).send("Aradığınız ürün bulunamadı.");
+    return res.status(404).send("Aradığınız ürün bulunamadı.");
   }
 
   // validate
@@ -64,13 +63,24 @@ app.put("/api/products/:id", (req, res) => {
   res.send(product);
 });
 
+app.delete("/api/products/:id", (req, res) => {
+  const product = products.find((p) => p.id == req.params.id);
+  if (!product) {
+    return res.status(404).send("Aradığınız ürün bulunamadı.");
+  }
+
+  const index = products.indexOf(product);
+  products.splice(index, 1);
+  res.send(product);
+});
+
 app.get("/api/products/:id", (req, res) => {
   console.log(req.params);
   console.log(req.query);
   const product = products.find((p) => p.id == req.params.id);
 
   if (!product) {
-    res.status(404).send("Aradığınız ürün bulunamadı.");
+    return res.status(404).send("Aradığınız ürün bulunamadı.");
   }
   res.send(product);
 });
