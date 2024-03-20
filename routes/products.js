@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const Joi = require("joi");
 
 const { Product, validateProduct } = require("../models/product");
 
@@ -10,7 +9,14 @@ const products = [
   { id: 3, name: "iphone14", price: 40000 },
 ];
 
-router.get("", (req, res) => {
+router.get("/", async (req, res) => {
+  const products = await Product.find();
+  // const products = await Product.find({ price: 10000, isActive: true });
+  // const products = await Product.find({ isActive: true }).limit(1).select({
+  //   name: 1,
+  //   price: 1,
+  // });
+
   res.send(products);
 });
 
@@ -70,10 +76,10 @@ router.delete("/:id", (req, res) => {
   res.send(product);
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   console.log(req.params);
   console.log(req.query);
-  const product = products.find((p) => p.id == req.params.id);
+  const product = await products.findOne({ _id: express.request.params.id });
 
   if (!product) {
     return res.status(404).send("Aradığınız ürün bulunamadı.");
