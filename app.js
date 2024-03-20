@@ -3,24 +3,19 @@ const app = express();
 
 const mongoose = require("mongoose");
 
-const cors = require("cors");
 const products = require("./routes/products");
+const categories = require("./routes/categories");
 const home = require("./routes/home");
+
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET"],
-  })
-);
-
 app.use("/api/products", products);
+app.use("/api/categories", categories);
 app.use("/", home);
 
-const username = "alperenaktug";
-const password = "Moriarty1579.843";
-const database = "shopdb";
+const username = "";
+const password = "";
+const database = "";
 
 (async () => {
   try {
